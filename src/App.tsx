@@ -1,28 +1,65 @@
 import { useState } from "react";
 import { Card } from "./components/Card";
-import { Input } from "./components/Input";
-import { Button } from "./components/Button";
+import { FilterTabs } from "./features/todos/FilterTabs";
+import { TodoForm } from "./features/todos/TodoForm";
+import { TodoList } from "./features/todos/TodoList";
+import { TodoStats } from "./features/todos/TodoStats";
+import { getVisibleTodos } from "./features/todos/todoFilters";
+import type { Todo, TodoFilter } from "./features/todos/types";
 
 function App() {
-  const [name, setName] = useState("");
+  const [todos, setTodos] = useState<Todo[]>([]);
+  const [filter, setFilter] = useState<TodoFilter>("all");
 
-  const handleSave = () => {
-    console.log("Saved value");
-  };
+  const visibleTodos = getVisibleTodos(todos, filter);
+
+  function handleAddTodo(title: string) {
+    const newTodo: Todo = {
+      id: crypto.randomUUID(),
+      title,
+      completed: false,
+    };
+
+    setTodos((currentTodos) => [...currentTodos, newTodo]);
+  }
+
+  function handleToggleTodo(id: string) {
+    setTodos((currentTodos) =>
+      currentTodos.map((todo) =>
+        todo.id === id
+          ? {
+              ...todo,
+              completed: !todo.completed,
+            }
+          : todo,
+      ),
+    );
+  }
+
+  function handleDeleteTodo(id: string) {
+    setTodos((currentTodos) => currentTodos.filter((todo) => todo.id !== id));
+  }
 
   return (
-    <main className="App">
-      <h1>Resuable Components</h1>
+    <main>
+      <h1>Todo List</h1>
 
-      <Card title="Profile">
-        <Input label="Name" value={name} onChange={setName} />
-
-        <p>Preview: {name || "No name entered"}</p>
-
-        <Button onClick={handleSave} disabled={!name}>
-          Save
-        </Button>
+      <Card title="Add Todo">
+        <TodoForm onAddTodo={handleAddTodo} />
       </Card>
+
+      <Card title="Todos">
+        <FilterTabs currentFilter={filter} onFilterChange={setFilter} />
+
+        <TodoList
+          todos={visibleTodos}
+          filter={filter}
+          onToggleTodo={handleToggleTodo}
+          onDeleteTodo={handleDeleteTodo}
+        />
+      </Card>
+
+      <TodoStats todos={todos} />
     </main>
   );
 }
