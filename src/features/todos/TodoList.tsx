@@ -1,38 +1,29 @@
 import { TodoItem } from "./TodoItem";
+import { getEmptyTodoMessage } from "./todoMessages";
 import type { Todo, TodoFilter } from "./types";
 
 type TodoListProps = {
-  todos: Todo[];
+  visibleTodos: Todo[];
   filter: TodoFilter;
   onToggleTodo: (id: string) => void;
   onDeleteTodo: (id: string) => void;
 };
 
-function getEmptyMessage(filter: TodoFilter) {
-  if (filter === "active") {
-    return "No active todos.";
-  }
-
-  if (filter === "completed") {
-    return "No completed todos.";
-  }
-
-  return "No todos yet. Add your first todo.";
-}
-
 export function TodoList({
-  todos,
+  visibleTodos,
   filter,
   onToggleTodo,
   onDeleteTodo,
 }: TodoListProps) {
-  if (todos.length === 0) {
-    return <p>{getEmptyMessage(filter)}</p>;
+  if (visibleTodos.length === 0) {
+    return <p>{getEmptyTodoMessage(filter)}</p>;
   }
+
+  console.log("Rendering TodoList with todos:", visibleTodos);
 
   return (
     <ul>
-      {todos.map((todo) => (
+      {visibleTodos.map((todo) => (
         <TodoItem
           key={todo.id}
           todo={todo}

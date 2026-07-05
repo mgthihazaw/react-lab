@@ -8,6 +8,8 @@ type TodoItemProps = {
 };
 
 export function TodoItem({ todo, onToggleTodo, onDeleteTodo }: TodoItemProps) {
+  console.log("Rendering TodoItem with todo:", todo);
+
   return (
     <li>
       <label>

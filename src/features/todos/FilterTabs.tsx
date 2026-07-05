@@ -13,6 +13,8 @@ const filters: { label: string; value: TodoFilter }[] = [
 ];
 
 export function FilterTabs({ currentFilter, onFilterChange }: FilterTabsProps) {
+  console.log("Rendering FilterTabs with currentFilter:", currentFilter);
+
   return (
     <div>
       {filters.map((filter) => (
