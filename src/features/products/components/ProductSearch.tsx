@@ -1,24 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useRef, useState } from 'react';
 import { products } from '../data/products';
 import { ProductList } from './ProductList';
 import './ProductSearch.css';
 import { SearchInput } from './SearchInput';
+import { useDebounce } from '../../../hook/useDebounce';
 
 const DEBOUNCE_DELAY_MS = 400;
 
 export function ProductSearch() {
+  const filterRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState('');
-  const [debouncedQuery, setDebouncedQuery] = useState('');
-
-  useEffect(() => {
-    const timeoutId = window.setTimeout(() => {
-      setDebouncedQuery(query);
-    }, DEBOUNCE_DELAY_MS);
-
-    return () => {
-      window.clearTimeout(timeoutId);
-    };
-  }, [query]);
+  const debouncedQuery = useDebounce(query, DEBOUNCE_DELAY_MS);
 
   const normalizedQuery = debouncedQuery.trim().toLowerCase();
 
@@ -38,7 +30,7 @@ export function ProductSearch() {
 
   function handleClearSearch() {
     setQuery('');
-    setDebouncedQuery('');
+    filterRef.current?.focus();
   }
 
   return (
@@ -49,6 +41,7 @@ export function ProductSearch() {
       </div>
 
       <SearchInput
+        ref={filterRef}
         value={query}
         onChange={setQuery}
         onClear={handleClearSearch}
