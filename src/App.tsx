@@ -1,14 +1,5 @@
+import { ProductSearch } from './features/products/components/ProductSearch';
 
-import { Products } from "./features/products/products";
-
-function App() {
-  
-
-  return (
-    <main>
-      <Products />
-    </main>
-  );
+export default function App() {
+  return <ProductSearch />;
 }
-
-export default App;
