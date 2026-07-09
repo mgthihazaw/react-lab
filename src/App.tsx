@@ -1,5 +1,5 @@
-import { ProductSearch } from './features/products/components/ProductSearch';
+import { ThemeToggle } from './features/ThemeToogle';
 
 export default function App() {
-  return <ProductSearch />;
+  return <ThemeToggle />;
 }
