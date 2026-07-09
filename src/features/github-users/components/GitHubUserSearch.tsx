@@ -18,18 +18,27 @@ export const GitHubUserSearch: React.FC = () => {
   const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
-    const fetchUsers = async (query: string) => {
+    const controller = new AbortController();
+
+    const loadUsers = async (query: string) => {
       setLoading(true);
       setError(null);
 
       try {
-        const data = await getGithubUsers(query);
+        const data = await getGithubUsers(query, controller.signal);
         setUsers(data);
       } catch (err) {
+        console.error("Error fetching GitHub users:", err, controller.signal.aborted);
+        if(controller.signal.aborted) {
+          return;
+        }
+
         setUsers([]);
         setError(err instanceof Error ? err.message : "Something went wrong");
       } finally {
-        setLoading(false);
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       }
     };
 
@@ -37,7 +46,13 @@ export const GitHubUserSearch: React.FC = () => {
       return;
     }
 
-    fetchUsers(query);
+    loadUsers(query);
+
+    // Cleanup function to abort the fetch request if the component unmounts or query changes
+    return () => {
+      controller.abort();
+    };
+
   }, [query, retryCount]);
 
   const onSubmit = () => {

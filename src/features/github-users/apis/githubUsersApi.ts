@@ -6,8 +6,9 @@ type GithubUserResponse = {
   items: GithubUser[];
 };
 
-const getGithubUsers = async (query: string): Promise<GithubUser[]> => {
-  const response = await fetch(`https://api.github.com/search/users?q=${encodeURIComponent(query)}`);
+const getGithubUsers = async (query: string, signal?: AbortSignal): Promise<GithubUser[]> => {
+  const response = await fetch(`https://api.github.com/search/users?q=${encodeURIComponent(query)}`,
+{ signal });
 
   if (!response.ok) {
     throw new Error(`Error: ${response.status}`);
