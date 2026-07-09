@@ -7,7 +7,7 @@ type GithubUserResponse = {
 };
 
 const getGithubUsers = async (query: string): Promise<GithubUser[]> => {
-  const response = await fetch(`https://api.github.com/search/users?q=${query}`);
+  const response = await fetch(`https://api.github.com/search/users?q=${encodeURIComponent(query)}`);
 
   if (!response.ok) {
     throw new Error(`Error: ${response.status}`);

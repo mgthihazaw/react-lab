@@ -3,6 +3,7 @@ import { SearchForm } from "./SearchForm";
 import UserList from "./UserList";
 import type { GithubUser } from "../types/githubUser";
 import "./../GitHubUserList.css";
+import { getGithubUsers } from "../apis/githubUsersApi";
 
 export const GitHubUserSearch: React.FC = () => {
   const [query, setQuery] = useState<string>("");
@@ -17,20 +18,17 @@ export const GitHubUserSearch: React.FC = () => {
       setError(null);
 
       try {
-        const response = await fetch(`https://api.github.com/search/users?q=${query}`);
-        if (!response.ok) {
-          throw new Error(`Error: ${response.status}`);
-        }
-        const data = await response.json();
-        setUsers(data.items);
+        const data = await getGithubUsers(query);
+        setUsers(data);
       } catch (err) {
-        setError((err as Error).message);
+        setUsers([]);
+        setError(err instanceof Error ? err.message : "Something went wrong");
       } finally {
         setLoading(false);
       }
     };
 
-    if(query.trim() === "") {
+    if (query.trim() === "") {
       return;
     }
 
@@ -53,7 +51,12 @@ export const GitHubUserSearch: React.FC = () => {
           <h1>Discover developers</h1>
         </div>
 
-        <SearchForm value={inputValue} isLoading={loading} onSubmit={ onSubmit} onChange={setInputValue}/>
+        <SearchForm
+          value={inputValue}
+          isLoading={loading}
+          onSubmit={onSubmit}
+          onChange={setInputValue}
+        />
 
         <div className="github-users__summary" aria-live="polite">
           {loading ? (
@@ -67,8 +70,10 @@ export const GitHubUserSearch: React.FC = () => {
 
         {error && <p className="github-users__error">{error}</p>}
 
-        {!loading && !error && users.length === 0 && (
-          <p className="github-users__empty">No users found. Try another search.</p>
+        {!query && <p className="github-users__empty">Enter a GitHub username to search.</p>}
+
+        {query && !loading && !error && users.length === 0 && (
+          <p className="github-users__empty">No users found for "{query}".</p>
         )}
 
         <UserList users={users} />

@@ -17,21 +17,20 @@ export function SearchForm({ value, isLoading, onChange, onSubmit }: SearchFormP
     onSubmit();
   };
 
-  return (<form
-            className="github-users__search"
-            onSubmit={handleSubmit}
-          >
-            <input
-              type="text"
-              value={ value }
-              onChange={ (event) => {
-                handleInputChange(event);
-              } }
-              placeholder="Search by username..."
-              aria-label="Search GitHub users"
-            />
-            <Button type="submit" disabled={false}>
-              { isLoading ? "Searching..." : "Search" }
-            </Button>
-          </form>
-  )};
+  return (
+    <form className="github-users__search" onSubmit={handleSubmit}>
+      <input
+        type="text"
+        value={value}
+        onChange={(event) => {
+          handleInputChange(event);
+        }}
+        placeholder="Search by username..."
+        aria-label="Search GitHub users"
+      />
+      <Button type="submit" disabled={isLoading}>
+        {isLoading ? "Searching..." : "Search"}
+      </Button>
+    </form>
+  );
+}
