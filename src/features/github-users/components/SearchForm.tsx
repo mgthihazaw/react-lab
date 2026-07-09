@@ -22,13 +22,12 @@ export function SearchForm({ value, isLoading, onChange, onSubmit }: SearchFormP
       <input
         type="text"
         value={value}
-        onChange={(event) => {
-          handleInputChange(event);
-        }}
+        onChange={handleInputChange}
         placeholder="Search by username..."
         aria-label="Search GitHub users"
       />
-      <Button type="submit" disabled={isLoading}>
+
+      <Button type="submit" disabled={!value.trim() || isLoading}>
         {isLoading ? "Searching..." : "Search"}
       </Button>
     </form>
