@@ -4,6 +4,10 @@ import UserList from "./UserList";
 import type { GithubUser } from "../types/githubUser";
 import "./../GitHubUserList.css";
 import { getGithubUsers } from "../apis/githubUsersApi";
+import { IdleState } from "./IdleState";
+import { LoadingState } from "./LoadingState";
+import { ErrorState } from "./ErrorState";
+import { EmptyState } from "./EmptyState";
 
 export const GitHubUserSearch: React.FC = () => {
   const [query, setQuery] = useState<string>("");
@@ -11,6 +15,7 @@ export const GitHubUserSearch: React.FC = () => {
   const [users, setUsers] = useState<GithubUser[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     const fetchUsers = async (query: string) => {
@@ -33,7 +38,7 @@ export const GitHubUserSearch: React.FC = () => {
     }
 
     fetchUsers(query);
-  }, [query]);
+  }, [query, retryCount]);
 
   const onSubmit = () => {
     const trimmedQuery = inputValue.trim();
@@ -42,6 +47,10 @@ export const GitHubUserSearch: React.FC = () => {
     }
     setQuery(trimmedQuery);
   };
+
+  function handleRetry() {
+    setRetryCount((count) => count + 1);
+  }
 
   return (
     <main className="github-users">
@@ -59,22 +68,18 @@ export const GitHubUserSearch: React.FC = () => {
         />
 
         <div className="github-users__summary" aria-live="polite">
-          {loading ? (
-            <span>Searching GitHub...</span>
-          ) : (
-            <span>
-              Showing {users.length} result{users.length === 1 ? "" : "s"} for "{query}"
-            </span>
-          )}
+          <span>
+            Showing {users.length} result{users.length === 1 ? "" : "s"} for "{query}"
+          </span>
         </div>
 
-        {error && <p className="github-users__error">{error}</p>}
+        {!query && <IdleState message="Enter a GitHub username to search." />}
 
-        {!query && <p className="github-users__empty">Enter a GitHub username to search.</p>}
+        {loading && <LoadingState message="Loading GitHub Users ......" />}
 
-        {query && !loading && !error && users.length === 0 && (
-          <p className="github-users__empty">No users found for "{query}".</p>
-        )}
+        {error && <ErrorState message={error} onRetry={handleRetry} />}
+
+        {query && !loading && !error && users.length === 0 && <EmptyState query={query} />}
 
         <UserList users={users} />
       </section>
