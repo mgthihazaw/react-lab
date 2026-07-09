@@ -1,5 +1,5 @@
-import { GitHubUserList } from './features/github-users/GitHubUserList';
+import { GitHubUserSearch } from './features/github-users/components/GitHubUserSearch';
 
 export default function App() {
-  return <GitHubUserList />;
+  return <GitHubUserSearch />;
 }
