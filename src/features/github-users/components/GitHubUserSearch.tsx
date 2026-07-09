@@ -1,71 +1,35 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { SearchForm } from "./SearchForm";
 import UserList from "./UserList";
-import type { GithubUser } from "../types/githubUser";
 import "./../GitHubUserList.css";
 import { getGithubUsers } from "../apis/githubUsersApi";
 import { IdleState } from "./IdleState";
 import { LoadingState } from "./LoadingState";
 import { ErrorState } from "./ErrorState";
 import { EmptyState } from "./EmptyState";
+import { useQuery } from "@tanstack/react-query";
 
 export const GitHubUserSearch: React.FC = () => {
   const [query, setQuery] = useState<string>("");
   const [inputValue, setInputValue] = useState<string>("");
-  const [users, setUsers] = useState<GithubUser[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [retryCount, setRetryCount] = useState(0);
 
-  useEffect(() => {
-    const controller = new AbortController();
+  const { data, isFetching, isPending, isError, error, isSuccess } = useQuery({
+    queryKey: ["github-users", query],
+    queryFn: () => getGithubUsers(query),
+    enabled: Boolean(query),
+  });
 
-    const loadUsers = async (query: string) => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const data = await getGithubUsers(query, controller.signal);
-        setUsers(data);
-      } catch (err) {
-        console.error("Error fetching GitHub users:", err, controller.signal.aborted);
-        if(controller.signal.aborted) {
-          return;
-        }
-
-        setUsers([]);
-        setError(err instanceof Error ? err.message : "Something went wrong");
-      } finally {
-        if (!controller.signal.aborted) {
-          setLoading(false);
-        }
-      }
-    };
-
-    if (query.trim() === "") {
-      return;
-    }
-
-    loadUsers(query);
-
-    // Cleanup function to abort the fetch request if the component unmounts or query changes
-    return () => {
-      controller.abort();
-    };
-
-  }, [query, retryCount]);
+  const users = data ?? [];
 
   const onSubmit = () => {
     const trimmedQuery = inputValue.trim();
     if (trimmedQuery === "") {
       return;
     }
-    setQuery(trimmedQuery);
+    setQuery(inputValue);
   };
 
-  function handleRetry() {
-    setRetryCount((count) => count + 1);
-  }
+  
 
   return (
     <main className="github-users">
@@ -77,7 +41,7 @@ export const GitHubUserSearch: React.FC = () => {
 
         <SearchForm
           value={inputValue}
-          isLoading={loading}
+          isLoading={isFetching}
           onSubmit={onSubmit}
           onChange={setInputValue}
         />
@@ -90,13 +54,15 @@ export const GitHubUserSearch: React.FC = () => {
 
         {!query && <IdleState message="Enter a GitHub username to search." />}
 
-        {loading && <LoadingState message="Loading GitHub Users ......" />}
+        {isPending && isFetching && <LoadingState message="Loading GitHub Users ......" />}
 
-        {error && <ErrorState message={error} onRetry={handleRetry} />}
+        {isError && <ErrorState message={error.message} />}
 
-        {query && !loading && !error && users.length === 0 && <EmptyState query={query} />}
+        {query && !isFetching && !error && users.length === 0 && <EmptyState query={query} />}
 
-        <UserList users={users} />
+        {isSuccess && users.length > 0 && <UserList users={users} />}
+
+        {isSuccess && isFetching && <p>Updating results...</p>}
       </section>
     </main>
   );
