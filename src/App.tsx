@@ -1,5 +1,5 @@
-import { ThemeToggle } from './features/ThemeToogle';
+import { GitHubUserList } from './features/github-users/GitHubUserList';
 
 export default function App() {
-  return <ThemeToggle />;
+  return <GitHubUserList />;
 }
