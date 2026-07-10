@@ -1,5 +1,5 @@
-import { GitHubUserSearch } from './features/github-users/components/GitHubUserSearch';
+import { LoginForm } from './features/LoginForm';
 
 export default function App() {
-  return <GitHubUserSearch />;
+  return <LoginForm />;
 }
