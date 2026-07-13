@@ -1,5 +1,5 @@
-import { CheckoutForm } from './features/W4/S4/CheckoutForm';
+import { ShoppingCartPage } from "./features/cart/ShoppingCartPage";
 
 export default function App() {
-  return <CheckoutForm />;
+  return <ShoppingCartPage />;
 }
