@@ -7,6 +7,7 @@ import { selectCartItemCount, selectCartSubtotal } from "./cart.selectors";
 import type { Product as CartProduct } from "./cart.types";
 import { ProductList } from "./ProductList";
 import "./ShoppingCartPage.css";
+import { useTheme } from "../../context";
 
 function toCartProduct(product: Product): CartProduct {
   return {
@@ -21,6 +22,8 @@ export function ShoppingCartPage() {
 
   const itemCount = selectCartItemCount(cartState);
   const subtotal = selectCartSubtotal(cartState);
+  const {theme } = useTheme();
+  console.log(theme)
 
   function getQuantityInCart(productId: string) {
     return cartState.items.find((item) => item.id === productId)?.quantity ?? 0;
