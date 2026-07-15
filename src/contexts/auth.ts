@@ -1,9 +1,16 @@
-import { createContext, useContext, type Dispatch } from "react"
-import type { AuthAction, AuthState } from "../reducers/authReducer"
+import { createContext, useContext } from "react"
+import type { AuthState, User } from "../reducers/authReducer"
+
+// type AuthContextValue = {
+//     state: AuthState,
+//     dispatch: Dispatch<AuthAction>
+// };
 
 type AuthContextValue = {
-    state: AuthState,
-    dispatch: Dispatch<AuthAction>
+  user: User | null;
+  status: AuthState["status"];
+  login: (user: User) => void;
+  logout: () => void;
 };
 
 export const AuthContext = createContext<AuthContextValue | undefined>(undefined);
