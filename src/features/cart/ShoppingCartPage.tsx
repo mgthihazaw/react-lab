@@ -7,7 +7,7 @@ import { selectCartItemCount, selectCartSubtotal } from "./cart.selectors";
 import type { Product as CartProduct } from "./cart.types";
 import { ProductList } from "./ProductList";
 import "./ShoppingCartPage.css";
-import { useTheme } from "../../contexts/context";
+import { useTheme } from "../../contexts/theme/useTheme";
 
 function toCartProduct(product: Product): CartProduct {
   return {
@@ -22,8 +22,7 @@ export function ShoppingCartPage() {
 
   const itemCount = selectCartItemCount(cartState);
   const subtotal = selectCartSubtotal(cartState);
-  const {theme } = useTheme();
-  console.log(theme)
+  const { theme } = useTheme();
 
   function getQuantityInCart(productId: string) {
     return cartState.items.find((item) => item.id === productId)?.quantity ?? 0;
@@ -37,7 +36,7 @@ export function ShoppingCartPage() {
   }
 
   return (
-    <main className="shopping-page">
+    <main className="shopping-page" data-theme={theme}>
       <header className="shopping-hero">
         <div>
           <p>React shop</p>

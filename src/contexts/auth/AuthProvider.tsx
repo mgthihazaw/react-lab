@@ -1,9 +1,10 @@
-import React, { useReducer } from "react";
-import { authReducer, inititalAuthState, type User } from "../reducers/authReducer";
-import { AuthContext } from "../contexts/auth";
+import { useReducer } from "react";
+import { AuthContext } from "./auth.context";
+import { authReducer, initialAuthState } from "./auth.reducer";
+import type { AuthProviderProps, User } from "./auth.types";
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [state, dispatch] = useReducer(authReducer, inititalAuthState);
+export function AuthProvider({ children }: AuthProviderProps) {
+  const [state, dispatch] = useReducer(authReducer, initialAuthState);
 
   function login(user: User) {
     dispatch({

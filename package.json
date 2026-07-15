@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "test": "node --import tsx --test src/features/cart/cart.reducer.test.ts",
+    "test": "node --import tsx --test src/features/cart/cart.reducer.test.ts src/contexts/auth/auth.reducer.test.ts src/contexts/theme/theme.reducer.test.ts",
     "preview": "vite preview",
     "format": "prettier . --write",
     "format:check": "prettier . --check"
