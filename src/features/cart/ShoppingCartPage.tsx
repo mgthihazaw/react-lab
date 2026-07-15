@@ -7,7 +7,7 @@ import { selectCartItemCount, selectCartSubtotal } from "./cart.selectors";
 import type { Product as CartProduct } from "./cart.types";
 import { ProductList } from "./ProductList";
 import "./ShoppingCartPage.css";
-import { useTheme } from "../../context";
+import { useTheme } from "../../contexts/context";
 
 function toCartProduct(product: Product): CartProduct {
   return {
