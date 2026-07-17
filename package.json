@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "test": "node --import tsx --test src/features/cart/cart.reducer.test.ts src/contexts/auth/auth.reducer.test.ts src/contexts/theme/theme.reducer.test.ts src/features/preferences/preferences.store.test.ts",
+    "test": "node --import tsx --test src/features/cart/cart.reducer.test.ts src/contexts/auth/auth.reducer.test.ts src/contexts/theme/theme.reducer.test.ts src/features/preferences/preferences.store.test.ts src/features/product-search/productFilters.test.ts src/features/product-search/ProductsPage.test.tsx",
     "preview": "vite preview",
     "format": "prettier . --write",
     "format:check": "prettier . --check"
@@ -15,9 +15,13 @@
   "dependencies": {
     "@hookform/resolvers": "^5.4.0",
     "@tanstack/react-query": "^5.101.2",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/react": "^16.3.2",
+    "jsdom": "^29.1.1",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-hook-form": "^7.81.0",
+    "react-router-dom": "^7.18.1",
     "zod": "^4.4.3",
     "zustand": "^5.0.14"
   },
